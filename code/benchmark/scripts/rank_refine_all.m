@@ -1,17 +1,13 @@
-function mtse_all(datasets,set_type,gt_set,stage,branch)
-	if nargin < 1
-		datasets='Pascal_07_test';
-		set_type='Main';
-		gt_set='test.txt';
-		stage = 4;
-		branch = 10;
-	end
+function rank_refine_all()
+	p = get_paths();
+	data_dir = sprintf('%s/%d_%f',p.data_dir,p.feature_len,p.miss_rate);
+	p.data_path = data_dir
 
-	set_file=fullfile(root_dir,'datasets',datasets,'ImageSets',set_type,gt_set);
+	set_file=fullfile(p.dataset_dir,p.test_set,'ImageSets',p.test_sub_set,p.test_gt);
 	im_ids=load(set_file);
 	image_num=length(im_ids);
 
-	rank_dir=sprintf('%s/benchmark/mtse_bbox_%d_%d',root_dir,stage,branch);
+	rank_dir=sprintf('%s/rank',data_dir);
 	if ~exist(rank_dir,'dir')
 		mkdir(rank_dir);
 	end
@@ -22,7 +18,7 @@ function mtse_all(datasets,set_type,gt_set,stage,branch)
 		if exist(bbox_file,'file')
 			continue
 		else
-			bbox=mtse(datasets,set_type,im_ids(ii),stage,branch);
+			bbox=rank_refine(p,im_ids(ii));
 			parsave(bbox_file,bbox);
 		end
 	end

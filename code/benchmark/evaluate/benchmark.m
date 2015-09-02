@@ -1,21 +1,14 @@
-function benchmark(datasets,set_type,gt_set,stage,branch,IoU,merge,method)
-	if nargin < 1
-		datasets='Pascal_07_test';
-		set_type='Main';
-		gt_set='test.txt';
-		stage=4;
-		branch=10;
-		IoU=0.5;
-		merge = 0.7;
-		method='mtse_edge';
-	end
+function benchmark()
 
+	p = get_paths();
+	data_dir = sprintf('%s/%d_%f',p.data_dir,p.feature_len,p.miss_rate);
+	p.data_path = data_dir
 
-	set_file=fullfile(root_dir,'datasets',datasets,'ImageSets',set_type,gt_set);
+	set_file=fullfile(p.dataset_dir,p.test_set,'ImageSets',p.test_sub_set,p.test_gt);
 	im_ids=load(set_file);
 	image_num=length(im_ids);
 
-	intersection_dir=sprintf('%s/benchmark/intersection',root_dir);
+	intersection_dir=sprintf('%s/intersection',p.data_path);
 	if ~exist(intersection_dir,'dir')
 		mkdir(intersection_dir);
 	end
@@ -26,7 +19,7 @@ function benchmark(datasets,set_type,gt_set,stage,branch,IoU,merge,method)
 		if exist(intersection_file,'file')
 			continue
 		else
-			intersection=eval_labels(im_ids(ii),stage,branch);
+			intersection=eval_labels(p,im_ids(ii));
 			parsave(intersection_file,intersection);
 		end
 	end
@@ -43,7 +36,7 @@ function benchmark(datasets,set_type,gt_set,stage,branch,IoU,merge,method)
 			curr_intersection=intersection(1:min(cands(jj),size(intersection,1)),:);
 			for kk=1:gt_num
 				max_inter=max(curr_intersection(:,kk));
-				if max_inter > IoU
+				if max_inter > p.IoU
 					precision(ii,jj)=precision(ii,jj)+1;
 				end
 			end
@@ -51,7 +44,7 @@ function benchmark(datasets,set_type,gt_set,stage,branch,IoU,merge,method)
 		precision(ii,:)=precision(ii,:)/gt_num;
 	end
 
-	precision_file=sprintf('%s/benchmark/result/%s_%d_%d_%.2f_%.2f.mat',root_dir,method,stage,branch,IoU,merge);
+	precision_file=sprintf('%s/result/%d_%d_%d_%.2f_%.2f.mat',p.data_dir,p.stage,p.branch,p.merge,p.IoU);
 	save(precision_file,'precision');
 
 	rmdir(intersection_dir,'s');

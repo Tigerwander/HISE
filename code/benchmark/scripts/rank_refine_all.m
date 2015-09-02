@@ -11,7 +11,6 @@ function rank_refine_all()
 	if ~exist(rank_dir,'dir')
 		mkdir(rank_dir);
 	end
-
 	matlabpool(8);
 	parfor ii=1:image_num
 		bbox_file=sprintf('%s/%06d.mat',rank_dir,im_ids(ii));
@@ -24,7 +23,6 @@ function rank_refine_all()
 	end
 	matlabpool close
 end
-
 function parsave(bbox_file,bbox)
 	save(bbox_file,'bbox');
 end

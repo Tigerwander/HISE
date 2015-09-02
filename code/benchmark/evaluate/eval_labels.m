@@ -1,9 +1,9 @@
-function [intersection]=eval_labels(im_id,stage,branch)
-	gt_file=sprintf('%s/benchmark/gt_bbox/%06d.xml',root_dir,im_id);
-	bbox_file=sprintf('%s/benchmark/mtse_edge_bbox_%d_%d/%06d.mat',root_dir,stage,branch,im_id);
-	bbox_file
+function [intersection]=eval_labels(p,im_id)
+	gt_file=sprintf('%s/%s/gt_bbox/%06d.xml',p.dataset_dir,p.test_set,im_id);
+	bbox_file=sprintf('%s/rank/%06d.mat',p.data_path,im_id);
 	gt_bbox=load(gt_file);
 	load(bbox_file);
+
 	bbox_num=size(bbox,1);
 	gt_num=size(gt_bbox,1);
 	intersection=zeros(bbox_num,gt_num);

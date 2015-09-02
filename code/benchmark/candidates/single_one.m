@@ -1,12 +1,12 @@
-function [total_bbox]=single_one(datasets,set_type,im_id,stage,branch)
+function [total_bbox]=single_one(p,branch,im_id)
 	total_bbox=[];
-	for ii=1:stage+1
-		superpixel_file=sprintf('%s/datasets/%s/superpixel/stage_%d_%d/%06d.mat',root_dir,datasets,ii,branch,im_id);
+	for ii=2:stage+1
+		superpixel_file=sprintf('%s/superpixel_test/stage_%d_%d/%06d.mat',p.data_path,ii,branch,im_id);
 		load(superpixel_file);
 		bbox=superpixel2bbox(superpixel);
 		total_bbox=[total_bbox;bbox];
 	end
-	bbox_file=sprintf('%s/datasets/%s/bbox/stage_%d_%d/%06d.mat',root_dir,datasets,(stage+1),branch,im_id);
+	bbox_file=sprintf('%s/bbox/stage_%d_%d/%06d.mat',p.data_path,stage+1,branch,im_id);
 	load(bbox_file);
 	total_bbox=[total_bbox;bbox];
 

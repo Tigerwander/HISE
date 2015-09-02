@@ -1,16 +1,6 @@
-function [bbs,I]=edge(datasets,set_type,im_id)
-	if nargin < 1
-		datasets='Pascal_07_test';
-		set_type='Main';
-		im_id=79;
-	end
-	image_file=sprintf('%s/datasets/%s/JPEGImages/%06d.jpg',root_dir,datasets,im_id);
-	I=imread(image_file);
-	bbox_file=sprintf('%s/benchmark/mtse_bbox_4_10/%06d.mat',root_dir,im_id);
-	load(bbox_file);
-	bbox=double(bbox);
+function [bbs]=edge(p,I,bbox)
 	%% load pre-trained edge detection model and set opts (see edgesDemo.m)
-	model_file=sprintf('%s/datasets/model/modelBsds.mat',root_dir);
+	model_file=sprintf('%s/model/modelBsds.mat',p.dataset_dir);
 	model=load(model_file); model=model.model;
 	model.opts.multiscale=0; model.opts.sharpen=2; model.opts.nThreads=4;
 

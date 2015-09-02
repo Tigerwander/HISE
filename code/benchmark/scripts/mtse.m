@@ -1,9 +1,4 @@
 function [boxes]=mtse(datasets,set_type,im_id,stage,branch)
-	if nargin < 1
-		datasets='Pascal_07_test';
-		set_type='Main';
-		im_id=79;
-	end
 	image_file=sprintf('%s/datasets/%s/JPEGImages/%06d.jpg',root_dir,datasets,im_id);
 	I=imread(image_file);
 

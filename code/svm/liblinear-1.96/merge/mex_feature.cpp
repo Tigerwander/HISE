@@ -297,17 +297,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
     ConstMatlabMultiArray<double> neigh_pairs_max(prhs[10]);
     ConstMatlabMultiArray<double> miss(prhs[11]);
     ConstMatlabMultiArray<double> split_ori(prhs[12]);
-
-	struct model *model_;
-	const char *error_msg;
-	model_ = Malloc(struct model,1);
-	error_msg=matlab_matrix_to_model(model_,prhs[13]);
-	if(error_msg)
-	{
-		mexPrintf("Error: cant read model %s\n",error_msg);
-		free_and_destroy_model(&model_);
-		return;
-	}
+    ConstMatlabMultiArray<double> w(prhs[13]);
 
     std::size_t n_leaves= L_Hist.shape()[0];
 	std::size_t L_size  = L_Hist.shape()[1];
@@ -333,6 +323,13 @@ void mexFunction( int nlhs, mxArray *plhs[],
     // Prepare cells to store results
 	map<unsigned int,set<unsigned int> > neighbors;
     
+	//Initialize weight
+	vector<double> weight;
+	int w_size = w.shape()[0];
+	for(int ii = 0;ii < w_size; ++ ii)
+		weight.push_back(w[ii][0]);
+
+
 	//Initialize split
 	int split[8]={0};
 	int split_num=split_ori.shape()[0];
@@ -482,7 +479,8 @@ void mexFunction( int nlhs, mxArray *plhs[],
 				
 				double simi_value=0;
 				for(int ii=0;ii<split_num;++ii)
-					simi_value += model_->w[ii]*split_feature[ii];
+					simi_value += weight[ii]*split_feature[ii];
+				simi_value += weight[split_num];
 
 				insert_pair(similarity,simi_value,reg_a,reg_b);
 			}
@@ -582,8 +580,9 @@ void mexFunction( int nlhs, mxArray *plhs[],
 			}
 
 			double simi_value=0;
-			for(int ii=0;ii<8;++ii)
-				simi_value += model_->w[ii]*split_feature[ii];
+			for(int ii=0;ii<split_num;++ii)
+				simi_value += weight[ii]*split_feature[ii];
+			simi_value += weight[split_num];
 
 			insert_pair(similarity,simi_value,neighbor_id,curr_id);
 		}
@@ -625,8 +624,6 @@ void mexFunction( int nlhs, mxArray *plhs[],
 		++merge_id;
 		++curr_id;
 	}
-
-	free_and_destroy_model(&model_);
 
     // Store at output variable cell
     plhs[0]=mxCreateDoubleMatrix(merge_num, 3,mxREAL);

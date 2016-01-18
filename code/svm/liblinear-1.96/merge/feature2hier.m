@@ -1,12 +1,8 @@
-function [superpixel,ms_matrix]=feature2hier(p,stage,branch,image_id,split,data_set) 
+function [superpixel,ms_matrix]=feature2hier(p,weight,stage,branch,image_id,split,data_set) 
 %%Extract adjacent region features
 
 	miss_rate = p.miss_rate;
 	split=split';
-
-	%load svm model
-	model_file=sprintf('%s/model/stage_%d_%d.mat',p.data_path,stage,branch);
-	load(model_file);
 
 	%load image
 	image_file=sprintf('%s/%s/JPEGImages/%06d.jpg',p.dataset_dir,data_set,image_id);
@@ -57,7 +53,7 @@ function [superpixel,ms_matrix]=feature2hier(p,stage,branch,image_id,split,data_
 	region_bbox(:,1:2)=ceil(region_bbox(:,1:2));
 	region_bbox(:,3:4)=region_bbox(:,1:2)+region_bbox(:,3:4)-1;
 
-	ms_matrix=mex_feature(region_feature{1},region_feature{2},region_feature{3},region_feature{4},region_feature{5},region_area,region_bbox,owt,superpixel-1,neigh_pairs_min-1,neigh_pairs_max-1,miss_rate,split,feature_model);
+	ms_matrix=mex_feature(region_feature{1},region_feature{2},region_feature{3},region_feature{4},region_feature{5},region_area,region_bbox,owt,superpixel-1,neigh_pairs_min-1,neigh_pairs_max-1,miss_rate,split,weight);
 
 	superpixel=merge_superpixel(superpixel,ms_matrix);
 end

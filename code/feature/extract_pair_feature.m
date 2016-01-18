@@ -144,7 +144,7 @@ function parsave(feature_file,feature_map,split)
 			curr_feature = feature(jj,:);
 			part_feature = curr_feature(split);
 			for kk=1:size(part_feature,2)
-				fprintf(fid,'%d:%f ',kk,part_feature(kk));
+				fprintf(fid,'%f ',part_feature(kk));
 			end
 			fprintf(fid,'\n');
 		end

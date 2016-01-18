@@ -14,6 +14,8 @@ function [p] = get_paths()
 	p.miss_rate = 0.7;
 	p.feature_len = 4;
 
+	p.IoU = 0.5
+
 
 	p.data_dir = '/home/lujianghu/Pascal/Datasets/Data';
 end

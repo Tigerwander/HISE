@@ -1,7 +1,7 @@
-function benchmark()
-
+function benchmark(IoU)
 	p = get_paths();
-	data_dir = sprintf('%s/%d_%f',p.data_dir,p.feature_len,p.miss_rate);
+	p.IoU = IoU;
+	data_dir = sprintf('%s/ours',p.data_dir);
 	p.data_path = data_dir
 
 	set_file=fullfile(p.dataset_dir,p.test_set,'ImageSets',p.test_sub_set,p.test_gt);
@@ -44,7 +44,7 @@ function benchmark()
 		precision(ii,:)=precision(ii,:)/gt_num;
 	end
 
-	precision_file=sprintf('%s/result/%d_%d_%d_%.2f_%.2f.mat',p.data_dir,p.stage,p.branch,p.merge,p.IoU);
+	precision_file=sprintf('%s/%.2f.mat',p.data_path,p.IoU);
 	save(precision_file,'precision');
 
 	rmdir(intersection_dir,'s');

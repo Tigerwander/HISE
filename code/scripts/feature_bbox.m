@@ -1,5 +1,8 @@
 function [bbox]=feature_bbox(p,stage,branch,im_id,split)
-	[~,ms_matrix]=feature2hier(p,stage,branch,im_id,split,p.test_set);
+	svm_file = sprintf('%s/model/stage_%d.mat',p.data_path,stage);
+	load(svm_file);
+	weight = w{branch};
+	[~,ms_matrix]=feature2hier(p,weight,stage,branch,im_id,split,p.test_set);
 	superpixel_file=sprintf('%s/superpixel_%s/stage_%d_%d/%06d.mat',p.data_path,p.test_set,stage,branch,im_id);
 
 	load(superpixel_file);

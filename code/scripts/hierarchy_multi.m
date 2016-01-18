@@ -22,6 +22,7 @@ function hierarchy_multi()
 
 	set_file = fullfile(p.dataset_dir,p.test_set,'ImageSets',p.test_sub_set,p.test_gt);
 	p.set_file = set_file;
+	p
 
 	split_dir = sprintf('%s/%s/split_%d',p.dataset_dir,p.split,p.feature_len);
 
